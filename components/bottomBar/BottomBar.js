@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Animated, StyleSheet, Text, View, TouchableHighlight, TouchableHighlightComponent, TouchableWithoutFeedback } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Animated, StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
-export default function App() {
-    const [active, setActive] = useState();
+export default function BottomBar() {
     const [bottomBarFade] = useState(new Animated.Value(-65));
     const [solverActive, setSolverActive] = useState(true);
     const [solvedActive, setSolvedActive] = useState(false);
@@ -55,11 +54,11 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 5,
+      height: 6,
     },
-    shadowOpacity: 0.45,
-    shadowRadius: 6.68,
-    elevation: 11
+    shadowOpacity: 0.5,
+    shadowRadius: 6.8,
+    elevation: 12
   },
   bottomTab: {
     flex: 1,
@@ -70,7 +69,8 @@ const styles = StyleSheet.create({
   bottomTabText: {
     color: "#CCCECE",
     textAlign: "center",
-    fontSize: 12,
+    fontSize: 11,
+    paddingTop: 2,
     fontWeight: "400",
   },
   blue: {
