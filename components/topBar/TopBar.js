@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Image, Animated, StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native';
-import { FontAwesome5 } from '@expo/vector-icons';
+//import { FontAwesome5 } from '@expo/vector-icons';
 import BrandHeader from "../brandHeader/BrandHeader";
+//import { LinearGradient } from "expo-linear-gradient"
 
 export default function TopBar() {
 
@@ -27,7 +28,7 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
         alignItems: "flex-end",
         flexDirection: "row",
-        backgroundColor: "#fff"
-        
+        backgroundColor: "#fff",
+        elevation: 4 
     }
 });

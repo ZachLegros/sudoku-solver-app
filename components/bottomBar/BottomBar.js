@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Animated, StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import Solver from "../solver/Solver";
+import SolvedPuzzles from "../solvedPuzzles/SolvedPuzzles";
 
-export default function BottomBar() {
+export default function BottomBar(props) {
     const [bottomBarFade] = useState(new Animated.Value(-65));
     const [solverActive, setSolverActive] = useState(true);
     const [solvedActive, setSolvedActive] = useState(false);
@@ -22,19 +24,21 @@ export default function BottomBar() {
       <TouchableWithoutFeedback onPress={() => {
           setSolvedActive(false);
           setSolverActive(true);
+          props.changeView(<Solver />);
         }}>
         <View style={styles.bottomTab}>
-          <FontAwesome5 name="robot" size={22} color={solverActive ? "#0167E7" : "#CCCECE"} />
-          <Text style={[styles.bottomTabText, solverActive ? styles.blue : null]}>Solver</Text>
+          <FontAwesome5 name="robot" size={22} style={{opacity: 0.8}} color={solverActive ? "#3e4a4f" : "#cdd0d1"} />
+          <Text style={[styles.bottomTabText, solverActive ? styles.dark : null]}>Solver</Text>
         </View>
       </TouchableWithoutFeedback>
       <TouchableWithoutFeedback onPress={() => {
           setSolvedActive(true);
           setSolverActive(false);
+          props.changeView(<SolvedPuzzles />);
         }}>
         <View style={styles.bottomTab}>
-          <FontAwesome5 name="th-large" size={22} color={solvedActive ? "#0167E7" : "#CCCECE"} />
-          <Text style={[styles.bottomTabText, solvedActive ? styles.blue : null]}>Solved puzzles</Text>
+          <FontAwesome5 name="th-large" size={22} style={{opacity: 0.8}} color={solvedActive ? "#3e4a4f" : "#cdd0d1"} />
+          <Text style={[styles.bottomTabText, solvedActive ? styles.dark : null]}>Solved puzzles</Text>
         </View>
       </TouchableWithoutFeedback>
     </Animated.View>
@@ -52,13 +56,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 6.8,
-    elevation: 12
+    elevation: 4
   },
   bottomTab: {
     flex: 1,
@@ -69,11 +67,11 @@ const styles = StyleSheet.create({
   bottomTabText: {
     color: "#CCCECE",
     textAlign: "center",
-    fontSize: 11,
+    fontSize: 12,
     paddingTop: 2,
     fontWeight: "400",
   },
-  blue: {
-    color: "#0167E7"
+  dark: {
+    color: "#3e4a4f"
   }
 });
