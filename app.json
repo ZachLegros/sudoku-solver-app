@@ -1,15 +1,14 @@
 {
   "expo": {
-    "name": "camsolve",
-    "slug": "camsolve",
+    "name": "CamSolve",
+    "slug": "CamSolve",
     "platforms": [
       "ios",
-      "android",
-      "web"
+      "android"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon-nobg.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
