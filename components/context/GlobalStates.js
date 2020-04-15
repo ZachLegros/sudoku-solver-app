@@ -3,11 +3,13 @@ import Context from "./Context";
 
 const GlobalStates = props => {
   const [solverActive, setSolverActive] = useState(false);
+  const [scannerActive, setScannerActive] = useState(false);
 
   return (
     <Context.Provider
       value={{
-        solverActive: [solverActive, setSolverActive]
+        solverActive: [solverActive, setSolverActive],
+        scannerActive: [scannerActive, setScannerActive]
       }}
     >
       {props.children}

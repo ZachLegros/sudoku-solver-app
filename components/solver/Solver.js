@@ -1,14 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import ActionButton from "../actionButton/ActionButton";
 import GameScanner from "./GameScanner";
+import Context from "../context/Context";
 
 export default function Solver(props) {
+  const context = useContext(Context);
+  const [scannerActive, setScannerActive] = context.scannerActive;
+
+  useEffect(() => {
+    setScannerActive(true);
+  }, []);
+
+  if (scannerActive) {
     return (
-    <View style={styles.container}>
-        <Text>Solver</Text>
-    </View>
+      <GameScanner />
+    );
+  }
+  return (
+    <Text>Solver</Text>
   );
+  
 }
 
 const styles = StyleSheet.create({
