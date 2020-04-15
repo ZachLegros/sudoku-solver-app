@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Animated, StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import Solver from "../solver/Solver";
+import SolverHome from "../solver/SolverHome";
+import Ripple from "react-native-material-ripple";
 import SolvedPuzzles from "../solvedPuzzles/SolvedPuzzles";
 
 export default function BottomBar(props) {
@@ -14,33 +15,29 @@ export default function BottomBar(props) {
           bottomBarFade,
             {
               toValue: 0,
-              duration: 250,
+              duration: 400,
             }
           ).start();
     }, []);
 
   return (
     <Animated.View  style={[{bottom: bottomBarFade }, styles.bottomBar]}>
-      <TouchableWithoutFeedback onPress={() => {
+      <Ripple style={styles.bottomTab} rippleFades={true} rippleColor="#cccaca" rippleOpacity={0.3} rippleSize={380} onPress={() => {
           setSolvedActive(false);
           setSolverActive(true);
-          props.changeView(<Solver />);
+          props.changeView(<SolverHome />);
         }}>
-        <View style={styles.bottomTab}>
           <FontAwesome5 name="robot" size={22} style={{opacity: 0.8}} color={solverActive ? "#3e4a4f" : "#cdd0d1"} />
           <Text style={[styles.bottomTabText, solverActive ? styles.dark : null]}>Solver</Text>
-        </View>
-      </TouchableWithoutFeedback>
-      <TouchableWithoutFeedback onPress={() => {
+      </Ripple>
+      <Ripple style={styles.bottomTab} rippleFades={true} rippleColor="#cccaca" rippleOpacity={0.3} rippleSize={380} onPress={() => {
           setSolvedActive(true);
           setSolverActive(false);
           props.changeView(<SolvedPuzzles />);
         }}>
-        <View style={styles.bottomTab}>
           <FontAwesome5 name="th-large" size={22} style={{opacity: 0.8}} color={solvedActive ? "#3e4a4f" : "#cdd0d1"} />
           <Text style={[styles.bottomTabText, solvedActive ? styles.dark : null]}>Solved puzzles</Text>
-        </View>
-      </TouchableWithoutFeedback>
+      </Ripple>
     </Animated.View>
   );
 }
@@ -60,9 +57,9 @@ const styles = StyleSheet.create({
   },
   bottomTab: {
     flex: 1,
+    height: "100%",
     alignItems: 'center',
     justifyContent: 'center',
-
   },
   bottomTabText: {
     color: "#CCCECE",

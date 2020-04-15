@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ActionButton from "../actionButton/ActionButton";
+import GameScanner from "./GameScanner";
 
-export default function Solver() {
-  return (
+export default function Solver(props) {
+    return (
     <View style={styles.container}>
-      <ActionButton content="Solve Sudoku" iconName="puzzle-piece" />
+        <Text>Solver</Text>
     </View>
   );
 }
@@ -13,7 +14,6 @@ export default function Solver() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f6f7',
     alignItems: 'center',
     justifyContent: 'center',
   },

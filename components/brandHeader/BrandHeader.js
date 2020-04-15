@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     },
     brandText: {
         fontSize: 18,
-        fontWeight: "700",
+        fontWeight: "500",
         marginLeft: 8
     }    
 });
