@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import BottomBar from './components/bottomBar/BottomBar';
 import TopBar from './components/topBar/TopBar';
-import SolverHome from "./components/solver/SolverHome";
+import Solver from "./components/solver/Solver";
 import GlobalStates from "./components/context/GlobalStates";
 
 export default function App() {
   // setting the default view to Solver component
-  const [activeView, setActiveView] = useState(<SolverHome />);
+  const [activeView, setActiveView] = useState(<Solver />);
 
   return (
     <GlobalStates>

@@ -5,7 +5,7 @@ import Ripple from "react-native-material-ripple";
 
 export default function ActionButton(props) {
   return (
-    <Ripple onPress={props.onPress} rippleColor="#084670" rippleFades={true} rippleOpacity={0.3} rippleSize={300} rippleContainerBorderRadius={35} style={styles.button}>
+    <Ripple onPress={props.onPress} rippleColor="#084670" rippleFades={true} rippleOpacity={0.25} rippleSize={400} rippleContainerBorderRadius={35} style={styles.button}>
         <Text style={{color: "#fff", fontSize: 16}}>{props.content}</Text>
         <FontAwesome5 name={props.iconName} style={{opacity: 0.9, marginLeft: 8}} size={14} color="#fff"/>
     </Ripple>

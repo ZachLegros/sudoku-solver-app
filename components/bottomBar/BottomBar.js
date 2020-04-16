@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Animated, StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
-import SolverHome from "../solver/SolverHome";
 import Ripple from "react-native-material-ripple";
 import SolvedPuzzles from "../solvedPuzzles/SolvedPuzzles";
+import Context from "../context/Context";
+import Solver from '../solver/Solver';
 
 export default function BottomBar(props) {
     const [bottomBarFade] = useState(new Animated.Value(-65));
     const [solverActive, setSolverActive] = useState(true);
     const [solvedActive, setSolvedActive] = useState(false);
+    const context = useContext(Context);
+    const scannerActive = context.scannerActive[0];
 
     useEffect(() => {
         Animated.timing(
@@ -20,17 +23,21 @@ export default function BottomBar(props) {
           ).start();
     }, []);
 
+  if (scannerActive) {
+    return null;
+  }
+
   return (
     <Animated.View  style={[{bottom: bottomBarFade }, styles.bottomBar]}>
-      <Ripple style={styles.bottomTab} rippleFades={true} rippleColor="#cccaca" rippleOpacity={0.3} rippleSize={380} onPress={() => {
+      <Ripple style={styles.bottomTab} rippleFades={true} rippleColor="#cccaca" rippleOpacity={0.25} rippleSize={500} onPress={() => {
           setSolvedActive(false);
           setSolverActive(true);
-          props.changeView(<SolverHome />);
+          props.changeView(<Solver />);
         }}>
           <FontAwesome5 name="robot" size={22} style={{opacity: 0.8}} color={solverActive ? "#3e4a4f" : "#cdd0d1"} />
           <Text style={[styles.bottomTabText, solverActive ? styles.dark : null]}>Solver</Text>
       </Ripple>
-      <Ripple style={styles.bottomTab} rippleFades={true} rippleColor="#cccaca" rippleOpacity={0.3} rippleSize={380} onPress={() => {
+      <Ripple style={styles.bottomTab} rippleFades={true} rippleColor="#cccaca" rippleOpacity={0.25} rippleSize={500} onPress={() => {
           setSolvedActive(true);
           setSolverActive(false);
           props.changeView(<SolvedPuzzles />);

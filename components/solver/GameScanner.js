@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { Camera } from "expo-camera";
 import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import Context from "../context/Context";
 
 export default function GameScanner(props) {
@@ -10,6 +11,7 @@ export default function GameScanner(props) {
   const type = Camera.Constants.Type.back;
   const context = useContext(Context);
   const setScannerActive = context.scannerActive[1];
+  let camera;
 
   useEffect(() => {
     setScannerActive(true);
@@ -28,18 +30,38 @@ export default function GameScanner(props) {
     return <Text>No access to camera</Text>;
   }
 
+  const snap = async () => {
+    if (camera) {
+      let photo = await camera.takePictureAsync();
+    }
+  };
+
   return (
-    <View style={{flex: 1, width: "100%", height:"100%", position: "absolute", top: 0}}>
-      <Camera style={{ flex: 1 }} ratio="16:9" flashMode={flash} autoFocus={true} type={type}>
+    <View style={{flex: 1, width: "100%", height:"100%"}}>
+      <Camera
+      ref={ref => {camera = ref}}
+      style={{ flex: 1 }} 
+      ratio="16:9" 
+      flashMode={flash} 
+      autoFocus={true} 
+      type={type}
+      onCameraReady={() => {}}>
         <View
-          style={{
-            flex: 1,
-            backgroundColor: 'transparent',
-            flexDirection: 'row',
-            alignItems: "center",
-            justifyContent: "center"
-          }}>
+          style={styles.container}>
             <TouchableOpacity onPress={() => {
+                setScannerActive(false);
+              }
+            } 
+            style={styles.elem} >
+              <FontAwesome5 name="arrow-left" color="#fff" size={24}/>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              onPress={() => {if (camera) {snap();}}}
+              style={styles.elem}>
+              <FontAwesome name="circle" color="#fff" size={65}/>
+            </TouchableOpacity>
+            <TouchableOpacity 
+            onPress={() => {
                 if (flash === 0) {
                   setFlash(2);
                 } else {
@@ -47,15 +69,8 @@ export default function GameScanner(props) {
                 }
               }
             } 
-            style={styles.flash} >
+            style={styles.elem} >
               <FontAwesome5 name="bolt" color="#fff" size={24}/>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => {
-                setScannerActive(false);
-              }
-            } 
-            style={styles.exit} >
-              <FontAwesome5 name="arrow-left" color="#fff" size={24}/>
             </TouchableOpacity>
         </View>
       </Camera>
@@ -64,24 +79,24 @@ export default function GameScanner(props) {
 }
 
 const styles = StyleSheet.create({
-  flash: {
-    flex: 0, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    width: 75, 
-    height: 75,
+  container: {
+    flex: 0,
     position: "absolute",
-    top: 30,
-    right: 0
+    paddingBottom: 25,
+    paddingTop: 25,
+    bottom: 0,
+    width: "100%",
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    alignItems: "center",
+    justifyContent: "space-around",
+    backgroundColor: "rgba(50, 50, 51, 0.5)"
   },
-  exit: {
+  elem: {
     flex: 0, 
     alignItems: 'center', 
     justifyContent: 'center', 
     width: 75, 
     height: 75,
-    position: "absolute",
-    top: 30,
-    left: 0
   }
 });

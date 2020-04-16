@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import GameScanner from "./GameScanner";
+import ActionButton from "../actionButton/ActionButton";
 import Context from "../context/Context";
 
 export default function Solver(props) {
@@ -8,7 +9,6 @@ export default function Solver(props) {
   const [scannerActive, setScannerActive] = context.scannerActive;
 
   useEffect(() => {
-    setScannerActive(true);
   }, []);
 
   if (scannerActive) {
@@ -16,8 +16,11 @@ export default function Solver(props) {
       <GameScanner />
     );
   }
+
   return (
-    <Text>Solver</Text>
+    <View style={styles.container}>
+      <ActionButton onPress={() => {setScannerActive(true)}} content="Solve a Sudoku" iconName="puzzle-piece" />
+    </View>
   );
   
 }
