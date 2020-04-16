@@ -8,7 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "expo": "~37.0.3",
+    "expo": "^37.0.7",
     "expo-camera": "~8.2.0",
     "expo-linear-gradient": "~8.1.0",
     "react": "~16.9.0",
