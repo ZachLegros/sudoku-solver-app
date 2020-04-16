@@ -2,20 +2,17 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import BottomBar from './components/bottomBar/BottomBar';
 import TopBar from './components/topBar/TopBar';
-import Solver from "./components/solver/Solver";
 import GlobalStates from "./components/context/GlobalStates";
+import Router from "./Router";
 
 export default function App() {
-  // setting the default view to Solver component
-  const [activeView, setActiveView] = useState(<Solver />);
-
   return (
     <GlobalStates>
-      <View style={styles.container}>
+      <React.Fragment>
         <TopBar />
-        {activeView}
-        <BottomBar changeView={(component) => {setActiveView(component)}}/>
-      </View> 
+          <Router />
+        <BottomBar />
+      </React.Fragment>
     </GlobalStates> 
   );
 }

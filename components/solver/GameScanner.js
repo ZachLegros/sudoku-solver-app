@@ -6,7 +6,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import Context from "../context/Context";
 import Spinner from '../spinner/Spinner';
 
-export default function GameScanner(props) {
+export default function GameScanner({navigation}) {
   const [hasPermission, setHasPermission] = useState(null);
   const [flash, setFlash] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -70,6 +70,7 @@ export default function GameScanner(props) {
             style={styles.container}>
               <TouchableOpacity onPress={() => {
                   setScannerActive(false);
+                  navigation.pop();
                 }
               } 
               style={styles.elem} >

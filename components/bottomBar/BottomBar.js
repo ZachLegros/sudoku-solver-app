@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Animated, StyleSheet, Text, View, TouchableWithoutFeedback } from 'react-native';
+import { Animated, StyleSheet, Text } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Ripple from "react-native-material-ripple";
-import SolvedPuzzles from "../solvedPuzzles/SolvedPuzzles";
 import Context from "../context/Context";
-import Solver from '../solver/Solver';
+import * as RootNavigation from '../../RootNavigation';
 
-export default function BottomBar(props) {
+export default function BottomBar() {
     const [bottomBarFade] = useState(new Animated.Value(-65));
     const [solverActive, setSolverActive] = useState(true);
     const [solvedActive, setSolvedActive] = useState(false);
@@ -32,7 +31,7 @@ export default function BottomBar(props) {
       <Ripple style={styles.bottomTab} rippleFades={true} rippleColor="#cccaca" rippleOpacity={0.25} rippleSize={500} onPress={() => {
           setSolvedActive(false);
           setSolverActive(true);
-          props.changeView(<Solver />);
+          RootNavigation.navigate('SolverHome');
         }}>
           <FontAwesome5 name="robot" size={22} style={{opacity: 0.8}} color={solverActive ? "#3e4a4f" : "#cdd0d1"} />
           <Text style={[styles.bottomTabText, solverActive ? styles.dark : null]}>Solver</Text>
@@ -40,7 +39,7 @@ export default function BottomBar(props) {
       <Ripple style={styles.bottomTab} rippleFades={true} rippleColor="#cccaca" rippleOpacity={0.25} rippleSize={500} onPress={() => {
           setSolvedActive(true);
           setSolverActive(false);
-          props.changeView(<SolvedPuzzles />);
+          RootNavigation.navigate('SolvedPuzzlesHome');
         }}>
           <FontAwesome5 name="th-large" size={22} style={{opacity: 0.8}} color={solvedActive ? "#3e4a4f" : "#cdd0d1"} />
           <Text style={[styles.bottomTabText, solvedActive ? styles.dark : null]}>Solved puzzles</Text>
