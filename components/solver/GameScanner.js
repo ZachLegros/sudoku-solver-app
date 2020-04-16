@@ -1,43 +1,56 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState, useContext } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Alert,
+  Dimensions,
+} from "react-native";
 import { Camera } from "expo-camera";
-import { FontAwesome5 } from '@expo/vector-icons';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import Context from "../context/Context";
-import Spinner from '../spinner/Spinner';
+import Spinner from "../spinner/Spinner";
+import * as FileSystem from "expo-file-system";
+import * as ImageManipulator from "expo-image-manipulator";
+import Scope from "./Scope";
 
-export default function GameScanner({navigation}) {
+export default function GameScanner({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [flash, setFlash] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const type = Camera.Constants.Type.back;
+  const scopePadding = 25;
+  const width = Dimensions.get("window").width;
+  const height = Dimensions.get("window").height;
 
   const context = useContext(Context);
   const setScannerActive = context.scannerActive[1];
-  
-  let camera;
 
+  let camera;
 
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === 'granted');
-      if (status === 'granted') {setScannerActive(true);}
+      setHasPermission(status === "granted");
+      if (status === "granted") {
+        setScannerActive(true);
+      }
 
-      return(() => {
+      return () => {
         setLoading(false);
         setFlash(false);
         setHasPermission(null);
-      }
-      );
+      };
     })();
 
-    return ( () => setScannerActive(false));
-  }, [])
+    return () => setScannerActive(false);
+  }, []);
 
   if (hasPermission === null) {
-    return <View style={{backgroundColor: "#f5f6f7"}}/>;
+    return <View style={{ backgroundColor: "#f5f6f7" }} />;
   }
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
@@ -45,62 +58,116 @@ export default function GameScanner({navigation}) {
 
   const snap = async () => {
     if (camera) {
-      let photo = await camera.takePictureAsync({ base64: true });
+      let photo = await camera.takePictureAsync();
       setLoading(true);
-      const detected = await context.detectSudoku(photo);
-      if (detected) {
-        setLoading(false);
-      }
+
+      // croping the pictue
+      ImageManipulator.manipulateAsync(
+        photo.uri,
+        [
+          {
+            crop: {
+              originX: scopePadding,
+              originY: (height - (width - 2 * scopePadding)) / 2,
+              width: width,
+              height: height,
+            },
+          },
+        ],
+        { base64: true }
+      ).then(async (croppedPhoto) => {
+        // clean cache memory
+        await FileSystem.deleteAsync(photo.uri).catch(() => {
+          Alert.alert(
+            "CamSolve",
+            "Attempt to delete the uncropped image from CamSolve's cache memory failed.",
+            [{ text: "OK" }],
+            { cancelable: false }
+          );
+        });
+
+        //detect sudoku board
+        const detected = await context.detectSudoku(croppedPhoto);
+        if (detected) {
+          setLoading(false);
+          console.log(croppedPhoto.uri);
+          // change screen
+        } else {
+          setLoading(false);
+
+          Alert.alert(
+            "CamSolve",
+            "No Sudoku puzzle was found. Make sure your that picture is bright enough and that the whole grid is covered in the frame.",
+            [{ text: "OK" }],
+            { cancelable: false }
+          );
+
+          // clean cache memory
+          await FileSystem.deleteAsync(croppedPhoto.uri).catch(() => {
+            Alert.alert(
+              "CamSolve",
+              "Attempt to delete the image from CamSolve's cache memory failed.",
+              [{ text: "OK" }],
+              { cancelable: false }
+            );
+          });
+        }
+      });
     }
   };
 
   return (
     <React.Fragment>
-      <View style={{flex: 1, width: "100%", height:"100%"}}>
+      <View style={{ flex: 1, width: "100%", height: "100%" }}>
         {loading ? <Spinner /> : null}
         <Camera
-        ref={ref => {camera = ref}}
-        style={{ flex: 1 }} 
-        ratio="16:9" 
-        flashMode={flash} 
-        autoFocus={true} 
-        type={type}
-        onCameraReady={() => {}}>
-          <View
-            style={styles.container}>
-              <TouchableOpacity onPress={() => {
-                  setScannerActive(false);
-                  navigation.pop();
-                }
-              } 
-              style={styles.elem} >
-                <FontAwesome5 name="arrow-left" color="#fff" size={24}/>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                onPress={() => {if (camera) {
-                    snap();
-                  }
-                }}
-                style={styles.elem}>
-                <FontAwesome name="circle" color="#fff" size={65}/>
-              </TouchableOpacity>
-              <TouchableOpacity 
+          ref={(ref) => {
+            camera = ref;
+          }}
+          style={{ flex: 1 }}
+          ratio="16:9"
+          flashMode={flash}
+          autoFocus={true}
+          type={type}
+          onCameraReady={() => {}}
+        >
+          <View style={styles.container}>
+            <TouchableOpacity
               onPress={() => {
-                  if (flash === 0) {
-                    setFlash(2);
-                  } else {
-                    setFlash(0);
-                  }
+                setScannerActive(false);
+                navigation.pop();
+              }}
+              style={styles.elem}
+            >
+              <FontAwesome5 name="arrow-left" color="#fff" size={24} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                if (camera) {
+                  snap();
                 }
-              } 
-              style={styles.elem} >
-                <FontAwesome5 name="bolt" color="#fff" size={24}/>
-              </TouchableOpacity>
+              }}
+              style={styles.elem}
+            >
+              <FontAwesome name="circle" color="#fff" size={65} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                if (flash === 0) {
+                  setFlash(2);
+                } else {
+                  setFlash(0);
+                }
+              }}
+              style={styles.elem}
+            >
+              <FontAwesome5 name="bolt" color="#fff" size={24} />
+            </TouchableOpacity>
           </View>
+          <Scope width={width} height={height} padding={scopePadding} />
         </Camera>
       </View>
     </React.Fragment>
-    
   );
 }
 
@@ -112,17 +179,18 @@ const styles = StyleSheet.create({
     paddingTop: 25,
     bottom: 0,
     width: "100%",
-    backgroundColor: 'transparent',
-    flexDirection: 'row',
+    zIndex: 10,
+    backgroundColor: "transparent",
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    backgroundColor: "rgba(50, 50, 51, 0.5)"
+    backgroundColor: "rgba(50, 50, 51, 0.9)",
   },
   elem: {
-    flex: 0, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    width: 75, 
+    flex: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    width: 75,
     height: 75,
-  }
+  },
 });
