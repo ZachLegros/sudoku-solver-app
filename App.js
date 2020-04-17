@@ -7,11 +7,9 @@ import Router from "./Router";
 export default function App() {
   return (
     <GlobalStates>
-      <React.Fragment>
-        <TopBar />
-        <Router />
-        <BottomBar />
-      </React.Fragment>
+      <TopBar />
+      <Router />
+      <BottomBar />
     </GlobalStates>
   );
 }

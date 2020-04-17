@@ -1,5 +1,5 @@
 import React from "react";
-import Solver from "./components/solver/SolverHome";
+import SolverHome from "./components/solver/SolverHome";
 import SolvedPuzzles from "./components/solvedPuzzles/SolvedPuzzles";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -16,7 +16,7 @@ export default function Router() {
         initialRouteName="SolverHome"
         screenOptions={{ headerShown: false }}
       >
-        <Stack.Screen name="SolverHome" component={Solver} />
+        <Stack.Screen name="SolverHome" component={SolverHome} />
         <Stack.Screen name="SolvedPuzzlesHome" component={SolvedPuzzles} />
         <Stack.Screen name="GameScanner" component={GameScanner} />
         <Stack.Screen name="Test" component={Test} />

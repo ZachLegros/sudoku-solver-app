@@ -5,12 +5,14 @@ import Ripple from "react-native-material-ripple";
 import Context from "../context/Context";
 import * as RootNavigation from "../../RootNavigation";
 
-export default function BottomBar() {
+export default function BottomBar(props) {
   const [bottomBarFade] = useState(new Animated.Value(-65));
   const [solverActive, setSolverActive] = useState(true);
   const [solvedActive, setSolvedActive] = useState(false);
   const context = useContext(Context);
   const scannerActive = context.scannerActive[0];
+
+  console.log(props.int);
 
   useEffect(() => {
     Animated.timing(bottomBarFade, {

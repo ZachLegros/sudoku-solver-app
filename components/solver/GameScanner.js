@@ -22,6 +22,7 @@ export default function GameScanner({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   const type = Camera.Constants.Type.back;
+
   // scope only
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -31,6 +32,71 @@ export default function GameScanner({ navigation }) {
   const setScannerActive = context.scannerActive[1];
 
   let camera;
+
+  const snap = async () => {
+    if (camera) {
+      let photo = await camera.takePictureAsync();
+      setLoading(true);
+
+      // get origin and crop size
+      const factor = photo.width / windowWidth;
+      const cropSide = photo.width - 2 * scopePadding * factor;
+      const cropX = scopePadding * factor;
+      const cropY = (photo.height - cropSide) / 2;
+
+      // croping the picture
+      ImageManipulator.manipulateAsync(
+        photo.uri,
+        [
+          {
+            crop: {
+              originX: cropX,
+              originY: cropY,
+              width: cropSide,
+              height: cropSide,
+            },
+          },
+        ],
+        { base64: true }
+      ).then(async (croppedPhoto) => {
+        // clean cache memory
+        await FileSystem.deleteAsync(photo.uri).catch(() => {
+          Alert.alert(
+            "CamSolve",
+            "Attempt to delete the uncropped image from CamSolve's cache memory failed.",
+            [{ text: "OK" }],
+            { cancelable: false }
+          );
+        });
+
+        //detect sudoku board
+        const detected = await context.detectSudoku(croppedPhoto);
+        if (detected) {
+          setLoading(false);
+          navigation.push("Test", { uri: croppedPhoto.uri });
+        } else {
+          setLoading(false);
+
+          Alert.alert(
+            "CamSolve",
+            "No Sudoku puzzle was found. Make sure your that picture is bright enough and that the whole grid is covered in the frame.",
+            [{ text: "OK" }],
+            { cancelable: false }
+          );
+
+          // clean cache memory
+          await FileSystem.deleteAsync(croppedPhoto.uri).catch(() => {
+            Alert.alert(
+              "CamSolve",
+              "Attempt to delete the image from CamSolve's cache memory failed.",
+              [{ text: "OK" }],
+              { cancelable: false }
+            );
+          });
+        }
+      });
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -57,72 +123,6 @@ export default function GameScanner({ navigation }) {
     return <Text>No access to camera</Text>;
   }
 
-  const snap = async () => {
-    if (camera) {
-      let photo = await camera.takePictureAsync();
-      setLoading(true);
-
-      // get origin and crop size
-      const factor = photo.width / windowWidth;
-      const cropSide = photo.width - 2 * scopePadding * factor;
-      const cropX = scopePadding * factor;
-      const cropY = (photo.height - cropSide) / 2;
-
-      // croping the pictue
-      ImageManipulator.manipulateAsync(
-        photo.uri,
-        [
-          {
-            // to change
-            crop: {
-              originX: cropX,
-              originY: cropY,
-              width: cropSide,
-              height: cropSide,
-            },
-          },
-        ],
-        { base64: true }
-      ).then(async (croppedPhoto) => {
-        // clean cache memory
-        await FileSystem.deleteAsync(photo.uri).catch(() => {
-          Alert.alert(
-            "CamSolve",
-            "Attempt to delete the uncropped image from CamSolve's cache memory failed.",
-            [{ text: "OK" }],
-            { cancelable: false }
-          );
-        });
-
-        //detect sudoku board
-        const detected = await context.detectSudoku(croppedPhoto);
-        if (detected) {
-          setLoading(false);
-          navigation.navigate("Test", { uri: croppedPhoto.uri });
-        } else {
-          setLoading(false);
-
-          Alert.alert(
-            "CamSolve",
-            "No Sudoku puzzle was found. Make sure your that picture is bright enough and that the whole grid is covered in the frame.",
-            [{ text: "OK" }],
-            { cancelable: false }
-          );
-
-          // clean cache memory
-          await FileSystem.deleteAsync(croppedPhoto.uri).catch(() => {
-            Alert.alert(
-              "CamSolve",
-              "Attempt to delete the image from CamSolve's cache memory failed.",
-              [{ text: "OK" }],
-              { cancelable: false }
-            );
-          });
-        }
-      });
-    }
-  };
-
   return (
     <React.Fragment>
       <View style={{ flex: 1, width: "100%", height: "100%" }}>
@@ -136,7 +136,6 @@ export default function GameScanner({ navigation }) {
           flashMode={flash}
           autoFocus={true}
           type={type}
-          onCameraReady={() => {}}
         >
           <View style={styles.container}>
             <TouchableOpacity

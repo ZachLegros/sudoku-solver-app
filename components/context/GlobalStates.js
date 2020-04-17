@@ -4,8 +4,9 @@ import Context from "./Context";
 const GlobalStates = (props) => {
   const [scannerActive, setScannerActive] = useState(false);
 
+  // Seb to implement
   const detectSudoku = (photo) => {
-    const detected = new Promise((resolve, reject) => {
+    const detected = new Promise((resolve) => {
       setTimeout(() => {
         resolve(true);
       }, 1000);
