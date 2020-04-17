@@ -15,6 +15,7 @@ import Spinner from "../spinner/Spinner";
 import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
 import Scope from "./Scope";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function GameScanner({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
@@ -72,8 +73,8 @@ export default function GameScanner({ navigation }) {
         //detect sudoku board
         const detected = await context.detectSudoku(croppedPhoto);
         if (detected) {
-          setLoading(false);
-          navigation.push("Test", { uri: croppedPhoto.uri });
+          // cleanup
+          navigation.navigate("Test", { uri: croppedPhoto.uri });
         } else {
           setLoading(false);
 
@@ -98,23 +99,25 @@ export default function GameScanner({ navigation }) {
     }
   };
 
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasPermission(status === "granted");
-      if (status === "granted") {
-        setScannerActive(true);
-      }
-
+  useFocusEffect(
+    React.useCallback(() => {
+      // focused
+      const getStatus = async () => {
+        const { status } = await Camera.requestPermissionsAsync();
+        setHasPermission(status === "granted");
+        if (status === "granted") {
+          setScannerActive(true);
+        }
+      };
+      getStatus();
+      // not focused
       return () => {
         setLoading(false);
-        setFlash(false);
-        setHasPermission(null);
+        setFlash(0);
+        setScannerActive(false);
       };
-    })();
-
-    return () => setScannerActive(false);
-  }, []);
+    }, [])
+  );
 
   if (hasPermission === null) {
     return <View style={{ backgroundColor: "#f5f6f7" }} />;
