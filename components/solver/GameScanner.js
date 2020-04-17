@@ -22,9 +22,10 @@ export default function GameScanner({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   const type = Camera.Constants.Type.back;
+  // scope only
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
   const scopePadding = 25;
-  const width = Dimensions.get("window").width;
-  const height = Dimensions.get("window").height;
 
   const context = useContext(Context);
   const setScannerActive = context.scannerActive[1];
@@ -61,16 +62,23 @@ export default function GameScanner({ navigation }) {
       let photo = await camera.takePictureAsync();
       setLoading(true);
 
+      // get origin and crop size
+      const factor = photo.width / windowWidth;
+      const cropSide = photo.width - 2 * scopePadding * factor;
+      const cropX = scopePadding * factor;
+      const cropY = (photo.height - cropSide) / 2;
+
       // croping the pictue
       ImageManipulator.manipulateAsync(
         photo.uri,
         [
           {
+            // to change
             crop: {
-              originX: scopePadding,
-              originY: (height - (width - 2 * scopePadding)) / 2,
-              width: width,
-              height: height,
+              originX: cropX,
+              originY: cropY,
+              width: cropSide,
+              height: cropSide,
             },
           },
         ],
@@ -90,8 +98,7 @@ export default function GameScanner({ navigation }) {
         const detected = await context.detectSudoku(croppedPhoto);
         if (detected) {
           setLoading(false);
-          console.log(croppedPhoto.uri);
-          // change screen
+          navigation.navigate("Test", { uri: croppedPhoto.uri });
         } else {
           setLoading(false);
 
@@ -164,7 +171,11 @@ export default function GameScanner({ navigation }) {
               <FontAwesome5 name="bolt" color="#fff" size={24} />
             </TouchableOpacity>
           </View>
-          <Scope width={width} height={height} padding={scopePadding} />
+          <Scope
+            width={windowWidth}
+            height={windowHeight}
+            padding={scopePadding}
+          />
         </Camera>
       </View>
     </React.Fragment>
