@@ -18,6 +18,7 @@ import Scope from "./Scope";
 import { useFocusEffect } from "@react-navigation/native";
 
 export default function GameScanner({ navigation }) {
+  const [processing, setProcessing] = useState(false);
   const [hasPermission, setHasPermission] = useState(null);
   const [flash, setFlash] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -35,14 +36,16 @@ export default function GameScanner({ navigation }) {
   let camera;
 
   const snap = async () => {
-    if (camera) {
+    if (!processing) {
+      setProcessing(true);
       let photo = await camera.takePictureAsync();
       setLoading(true);
 
       // get origin and crop size
       const factor = photo.width / windowWidth;
-      const cropSide = photo.width - 2 * scopePadding * factor;
-      const cropX = scopePadding * factor;
+      const cropSide = photo.width;
+      // give padding to reduce margin of error
+      const cropX = 0;
       const cropY = (photo.height - cropSide) / 2;
 
       // croping the picture
@@ -73,8 +76,8 @@ export default function GameScanner({ navigation }) {
         //detect sudoku board
         const detected = await context.detectSudoku(croppedPhoto);
         if (detected) {
-          // cleanup
-          navigation.navigate("Test", { uri: croppedPhoto.uri });
+          const solved = await context.solveSudoku(detected);
+          navigation.navigate("Result", { grid: solved });
         } else {
           setLoading(false);
 
@@ -84,17 +87,18 @@ export default function GameScanner({ navigation }) {
             [{ text: "OK" }],
             { cancelable: false }
           );
-
-          // clean cache memory
-          await FileSystem.deleteAsync(croppedPhoto.uri).catch(() => {
-            Alert.alert(
-              "CamSolve",
-              "Attempt to delete the image from CamSolve's cache memory failed.",
-              [{ text: "OK" }],
-              { cancelable: false }
-            );
-          });
         }
+        // clean cache memory
+        await FileSystem.deleteAsync(croppedPhoto.uri).catch(() => {
+          Alert.alert(
+            "CamSolve",
+            "Attempt to delete the image from CamSolve's cache memory failed.",
+            [{ text: "OK" }],
+            { cancelable: false }
+          );
+        });
+
+        setProcessing(false);
       });
     }
   };
@@ -115,6 +119,7 @@ export default function GameScanner({ navigation }) {
         setLoading(false);
         setFlash(0);
         setScannerActive(false);
+        setProcessing(false);
       };
     }, [])
   );
@@ -123,7 +128,20 @@ export default function GameScanner({ navigation }) {
     return <View style={{ backgroundColor: "#f5f6f7" }} />;
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    setScannerActive(false);
+    return (
+      <View
+        style={{
+          flex: 1,
+          width: "100%",
+          height: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text>No access to camera</Text>
+      </View>
+    );
   }
 
   return (
@@ -197,7 +215,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
-    backgroundColor: "rgba(50, 50, 51, 0.9)",
+    backgroundColor: "#19191a",
   },
   elem: {
     flex: 0,

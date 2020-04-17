@@ -14,11 +14,14 @@ const GlobalStates = (props) => {
     return detected;
   };
 
+  const solveSudoku = (detected) => {};
+
   return (
     <Context.Provider
       value={{
         scannerActive: [scannerActive, setScannerActive],
         detectSudoku: detectSudoku,
+        solveSudoku: solveSudoku,
       }}
     >
       {props.children}
