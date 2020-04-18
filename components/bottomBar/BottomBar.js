@@ -12,8 +12,6 @@ export default function BottomBar(props) {
   const context = useContext(Context);
   const scannerActive = context.scannerActive[0];
 
-  console.log(props.int);
-
   useEffect(() => {
     Animated.timing(bottomBarFade, {
       toValue: 0,
