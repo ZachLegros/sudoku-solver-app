@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
 import ActionButton from "../actionButton/ActionButton";
 
 export default function SolvedPuzzles() {
@@ -13,8 +13,8 @@ export default function SolvedPuzzles() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f6f7',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#f5f6f7",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

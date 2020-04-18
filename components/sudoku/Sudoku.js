@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderColor: "gray",
     borderWidth: gridBorder,
+    elevation: 3,
   },
   cell: {
     width: cellSide,
