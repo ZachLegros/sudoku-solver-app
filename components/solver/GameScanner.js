@@ -18,6 +18,7 @@ import Scope from "./Scope";
 import { useFocusEffect } from "@react-navigation/native";
 
 export default function GameScanner({ navigation }) {
+  const context = useContext(Context);
   const [processing, setProcessing] = useState(false);
   const [hasPermission, setHasPermission] = useState(null);
   const [flash, setFlash] = useState(0);
@@ -30,7 +31,6 @@ export default function GameScanner({ navigation }) {
   const windowHeight = Dimensions.get("window").height;
   const scopePadding = 25;
 
-  const context = useContext(Context);
   const setScannerActive = context.scannerActive[1];
 
   let camera;
@@ -74,9 +74,9 @@ export default function GameScanner({ navigation }) {
         });
 
         //detect sudoku board
-        const detected = await context.detectSudoku(croppedPhoto);
+        let detected = await context.detectSudoku(croppedPhoto);
         if (detected) {
-          const solved = await context.solveSudoku(detected);
+          const solved = context.solveSudoku(detected);
           navigation.navigate("Result", { grid: solved });
         } else {
           setLoading(false);

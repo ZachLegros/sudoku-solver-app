@@ -5,7 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { navigationRef } from "./RootNavigation";
 import GameScanner from "./components/solver/GameScanner";
-import Test from "./components/solver/Test";
+import Result from "./components/solver/Result";
 
 const Stack = createStackNavigator();
 
@@ -19,7 +19,7 @@ export default function Router() {
         <Stack.Screen name="SolverHome" component={SolverHome} />
         <Stack.Screen name="SolvedPuzzlesHome" component={SolvedPuzzles} />
         <Stack.Screen name="GameScanner" component={GameScanner} />
-        <Stack.Screen name="Test" component={Test} />
+        <Stack.Screen name="Result" component={Result} />
       </Stack.Navigator>
     </NavigationContainer>
   );

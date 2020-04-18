@@ -1,9 +1,17 @@
 import React, { useContext } from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import Context from "../context/Context";
 
 export default function Result({ navigation, route }) {
   // 2d array of int representing the sudoku puzzle solved
   const grid = route.params.grid;
+
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log(grid);
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
