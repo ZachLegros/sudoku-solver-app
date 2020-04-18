@@ -23,6 +23,7 @@ export default function GameScanner({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [flash, setFlash] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [focused, setFocused] = useState(true);
 
   const type = Camera.Constants.Type.back;
 
@@ -106,6 +107,8 @@ export default function GameScanner({ navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       // focused
+      setFocused(true);
+
       const getStatus = async () => {
         const { status } = await Camera.requestPermissionsAsync();
         setHasPermission(status === "granted");
@@ -120,6 +123,7 @@ export default function GameScanner({ navigation }) {
         setFlash(0);
         setScannerActive(false);
         setProcessing(false);
+        setFocused(false);
       };
     }, [])
   );
@@ -148,55 +152,57 @@ export default function GameScanner({ navigation }) {
     <React.Fragment>
       <View style={{ flex: 1, width: "100%", height: "100%" }}>
         {loading ? <Spinner /> : null}
-        <Camera
-          ref={(ref) => {
-            camera = ref;
-          }}
-          style={{ flex: 1 }}
-          ratio="16:9"
-          flashMode={flash}
-          autoFocus={true}
-          type={type}
-        >
-          <View style={styles.container}>
-            <TouchableOpacity
-              onPress={() => {
-                setScannerActive(false);
-                navigation.pop();
-              }}
-              style={styles.elem}
-            >
-              <FontAwesome5 name="arrow-left" color="#fff" size={24} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                if (camera) {
-                  snap();
-                }
-              }}
-              style={styles.elem}
-            >
-              <FontAwesome name="circle" color="#fff" size={65} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                if (flash === 0) {
-                  setFlash(2);
-                } else {
-                  setFlash(0);
-                }
-              }}
-              style={styles.elem}
-            >
-              <FontAwesome5 name="bolt" color="#fff" size={24} />
-            </TouchableOpacity>
-          </View>
-          <Scope
-            width={windowWidth}
-            height={windowHeight}
-            padding={scopePadding}
-          />
-        </Camera>
+        {focused ? (
+          <Camera
+            ref={(ref) => {
+              camera = ref;
+            }}
+            style={{ flex: 1 }}
+            ratio="16:9"
+            flashMode={flash}
+            autoFocus={true}
+            type={type}
+          >
+            <View style={styles.container}>
+              <TouchableOpacity
+                onPress={() => {
+                  setScannerActive(false);
+                  navigation.pop();
+                }}
+                style={styles.elem}
+              >
+                <FontAwesome5 name="arrow-left" color="#fff" size={24} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  if (camera) {
+                    snap();
+                  }
+                }}
+                style={styles.elem}
+              >
+                <FontAwesome name="circle" color="#fff" size={65} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  if (flash === 0) {
+                    setFlash(2);
+                  } else {
+                    setFlash(0);
+                  }
+                }}
+                style={styles.elem}
+              >
+                <FontAwesome5 name="bolt" color="#fff" size={24} />
+              </TouchableOpacity>
+            </View>
+            <Scope
+              width={windowWidth}
+              height={windowHeight}
+              padding={scopePadding}
+            />
+          </Camera>
+        ) : null}
       </View>
     </React.Fragment>
   );
