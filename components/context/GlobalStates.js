@@ -140,10 +140,10 @@ const GlobalStates = (props) => {
 
               resolve(result.rows._array);
             },
-            (tx, err) => reject(null)
+            (tx, err) => resolve([])
           );
         },
-        (error) => reject(null)
+        (error) => resolve([])
       );
     });
 
