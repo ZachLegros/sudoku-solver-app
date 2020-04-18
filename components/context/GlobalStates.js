@@ -113,14 +113,41 @@ const GlobalStates = (props) => {
         tx.executeSql(
           "INSERT INTO grids (original, solved) VALUES (?, ?)",
           [originalStr, solvedStr],
-          (success, result) =>
-            console.log("Success in tx: ", success, " Result: ", result),
-          (error) => console.error("Error in tx: ", error)
+          (tx, result) => console.log("Success in tx: ", result),
+          (tx, err) => console.error("Error in tx: ", err)
         );
       },
       (error) => console.error("Error transaction: ", error),
       (success) => console.log("Success transaction: ", success)
     );
+  };
+
+  const getAllSudokus = () => {
+    const grids = new Promise((resolve, reject) => {
+      const db = SQLite.openDatabase("solved_puzzles");
+
+      db.transaction(
+        (tx) => {
+          tx.executeSql(
+            "SELECT * FROM grids",
+            [],
+            (tx, result) => {
+              // parsing the Strings to Arrays
+              result.rows._array.forEach((row) => {
+                row.original = JSON.parse(row.original);
+                row.solved = JSON.parse(row.solved);
+              });
+
+              resolve(result.rows._array);
+            },
+            (tx, err) => reject(null)
+          );
+        },
+        (error) => reject(null)
+      );
+    });
+
+    return grids;
   };
 
   return (
@@ -130,6 +157,7 @@ const GlobalStates = (props) => {
         detectSudoku: detectSudoku,
         solveSudoku: solveSudoku,
         saveSudoku: saveSudoku,
+        getAllSudokus: getAllSudokus,
       }}
     >
       {props.children}
