@@ -79,8 +79,8 @@ export default function GameScanner({ navigation }) {
         if (detected) {
           const solved = context.solveSudoku(detected);
           navigation.navigate("Result", {
-            grid: solved,
-            originalGrid: detected,
+            solved: solved,
+            original: detected,
           });
         } else {
           setLoading(false);
