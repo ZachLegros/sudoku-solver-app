@@ -24,5 +24,5 @@ function encode_base64(filename) {
   });
 }
 
-// encode jpg image from ./images to a base64 string
+// encode .jpg image from ./images to a base64 string written in a .txt
 encode_base64("sudoku1");
