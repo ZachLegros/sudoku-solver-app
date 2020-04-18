@@ -78,7 +78,10 @@ export default function GameScanner({ navigation }) {
         let detected = await context.detectSudoku(croppedPhoto);
         if (detected) {
           const solved = context.solveSudoku(detected);
-          navigation.navigate("Result", { grid: solved });
+          navigation.navigate("Result", {
+            grid: solved,
+            originalGrid: detected,
+          });
         } else {
           setLoading(false);
 
