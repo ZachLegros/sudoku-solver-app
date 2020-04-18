@@ -8,8 +8,8 @@ import Context from "../context/Context";
 export default function Result({ navigation, route }) {
   const context = useContext(Context);
   // 2d array of int representing the sudoku puzzle solved
-  const solvedGrid = route.params.grid;
-  const originalGrid = route.params.originalGrid;
+  const solved = route.params.solved;
+  const original = route.params.original;
 
   useFocusEffect(
     React.useCallback(() => {
@@ -22,15 +22,19 @@ export default function Result({ navigation, route }) {
       <ActionButton
         onPress={() => {
           const grids = {
-            original: originalGrid,
-            solved: solvedGrid,
+            original: original,
+            solved: solved,
           };
           context.saveSudoku(grids);
         }}
         content="Save"
         iconName={null}
       />
-      <Sudoku grid={solvedGrid} originalGrid={originalGrid} />
+      <Sudoku
+        solved={solved}
+        original={original}
+        width={Dimensions.get("window").width}
+      />
     </View>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, FlatList } from "react-native";
 import ActionButton from "../actionButton/ActionButton";
 import Context from "../context/Context";
 import Sudoku from "../sudoku/Sudoku";
@@ -21,13 +21,27 @@ export default function SolvedPuzzles() {
       {!grids ? (
         <Text>There are no saved Sudokus.</Text>
       ) : (
-        grids.map((grid) => {
-          return (
-            <React.Fragment>
-              <Text>{grid.grid_id}</Text>
-            </React.Fragment>
-          );
-        })
+        <FlatList
+          data={grids}
+          renderItem={({ item, index }) => (
+            <View
+              key={index}
+              style={{
+                flex: 1,
+                width: 150,
+                height: 150,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Sudoku
+                width={125}
+                original={item.original}
+                solved={item.solved}
+              />
+            </View>
+          )}
+        />
       )}
     </View>
   );
