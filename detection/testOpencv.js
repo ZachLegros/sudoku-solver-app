@@ -54,19 +54,37 @@ const cv = require('opencv.js');
   //sort by descending order
   contourArr.sort(function(a, b){return cv.contourArea(b) - cv.contourArea(a)});
 
-  let contoursSorted = new cv.MatVector();
+  let sortedContours = new cv.MatVector();
 
   for (let i=0; i < contourArr.length; i++) {
-    contoursSorted.push_back(contourArr[i]);
+    sortedContours.push_back(contourArr[i]);
   }
 
   //find and draw the largest contour
   let result = cv.Mat.zeros(dst.cols, dst.rows, cv.CV_8UC3)  // show contours
-  for (let i = 0; i<1; ++i) {
-    let color = new cv.Scalar(255, 255, 255);
-    cv.drawContours(result, contoursSorted, i, color, 1, cv.LINE_8, hierarchy, 100);
-}
+  let color = new cv.Scalar(255, 255, 255);
+  // cv.drawContours(result, sortedContours, 0, color, 5, cv.LINE_8, hierarchy, 100);
+  
+  let biggestContour = contourArr[0];
+  
+  
 
+  let peri = cv.arcLength(biggestContour, true);
+  let contourApprox = new cv.Mat();
+  cv.approxPolyDP(biggestContour, contourApprox, 0.015 * peri, true);
+
+  if (contourApprox.rows != 4) {
+    // return false or something like that
+  }
+
+  let a = new cv.MatVector()
+  a.push_back(contourApprox);
+  cv.drawContours(result, a, 0, color, 5, cv.LINE_8);
+  
+  
+  console.log(contourApprox.intPtr(3, 0));
+
+  
 
   // we create an object compatible HTMLCanvasElement
   const canvas = createCanvas(300, 300);
