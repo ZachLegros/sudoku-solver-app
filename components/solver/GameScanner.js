@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -16,6 +16,7 @@ import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
 import Scope from "./Scope";
 import { useFocusEffect } from "@react-navigation/native";
+import Constants from "expo-constants";
 
 export default function GameScanner({ navigation }) {
   const context = useContext(Context);
@@ -160,7 +161,7 @@ export default function GameScanner({ navigation }) {
             ref={(ref) => {
               camera = ref;
             }}
-            style={{ flex: 1 }}
+            style={{ flex: 1, marginTop: Constants.statusBarHeight }}
             ratio="16:9"
             flashMode={flash}
             autoFocus={true}

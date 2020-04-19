@@ -99,12 +99,12 @@ const GlobalStates = (props) => {
         tx.executeSql(
           "CREATE TABLE IF NOT EXISTS grids (grid_id INTEGER PRIMARY KEY, original TEXT, solved TEXT)",
           [],
-          (success) => console.log("Success in tx: ", success),
+          () => {},
           (error) => console.error("Error in tx: ", error)
         );
       },
       (error) => console.error("Error transaction: ", error),
-      (success) => console.log("Success transaction: ", success)
+      () => {}
     );
 
     // insert the solved sudoku and the original sudoku as JSON strings
@@ -113,17 +113,17 @@ const GlobalStates = (props) => {
         tx.executeSql(
           "INSERT INTO grids (original, solved) VALUES (?, ?)",
           [originalStr, solvedStr],
-          (tx, result) => console.log("Success in tx: ", result),
+          () => {},
           (tx, err) => console.error("Error in tx: ", err)
         );
       },
       (error) => console.error("Error transaction: ", error),
-      (success) => console.log("Success transaction: ", success)
+      () => {}
     );
   };
 
   const getAllSudokus = () => {
-    const grids = new Promise((resolve, reject) => {
+    const grids = new Promise((resolve) => {
       const db = SQLite.openDatabase("solved_puzzles");
 
       db.transaction(

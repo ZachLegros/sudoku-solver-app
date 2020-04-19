@@ -4,7 +4,7 @@ import { StyleSheet, View, Text, Dimensions } from "react-native";
 export default function Sudoku(props) {
   const solved = props.solved;
   const original = props.original;
-  const parentWidth = props.width;
+  const parentWidth = props.width / 1.25;
 
   const isOriginal = (y, x, n) => {
     if (original) {
@@ -13,7 +13,7 @@ export default function Sudoku(props) {
     return false;
   };
 
-  const gridSide = parentWidth - parentWidth / 9;
+  const gridSide = parentWidth;
   const cellSide = gridSide / 9;
   const gridBorder = 0.0035 * parentWidth;
   const cellBorder = 0.00125 * parentWidth;
@@ -30,7 +30,6 @@ export default function Sudoku(props) {
       backgroundColor: "#fff",
       borderColor: "gray",
       borderWidth: gridBorder,
-      elevation: 3,
     },
     cell: {
       width: cellSide,
