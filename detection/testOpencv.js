@@ -38,6 +38,34 @@ const cv = require('opencv.js');
 
   
   // contour detection
+  let contours = new cv.MatVector();
+  let hierarchy = new cv.Mat();
+  // You can try more different parameters
+  cv.findContours(dst, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+
+
+  // sort all contours by their area
+  let contourArr = [];
+
+  for (let i=0; i < contours.size(); i++) {
+    contourArr[i] = contours.get(i);
+  }
+
+  //sort by descending order
+  contourArr.sort(function(a, b){return cv.contourArea(b) - cv.contourArea(a)});
+
+  let contoursSorted = new cv.MatVector();
+
+  for (let i=0; i < contourArr.length; i++) {
+    contoursSorted.push_back(contourArr[i]);
+  }
+
+  //find and draw the largest contour
+  let result = cv.Mat.zeros(dst.cols, dst.rows, cv.CV_8UC3)  // show contours
+  for (let i = 0; i<1; ++i) {
+    let color = new cv.Scalar(255, 255, 255);
+    cv.drawContours(result, contoursSorted, i, color, 1, cv.LINE_8, hierarchy, 100);
+}
 
 
   // we create an object compatible HTMLCanvasElement
