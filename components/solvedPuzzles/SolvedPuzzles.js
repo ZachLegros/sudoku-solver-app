@@ -16,16 +16,24 @@ import Spinner from "../spinner/Spinner";
 
 function Item({ id, title, solved, original, onSelect }) {
   return (
-    <TouchableOpacity onPress={() => onSelect(id)} style={styles.item}>
+    <TouchableOpacity
+      key={id}
+      onPress={() => onSelect({ id, title, solved, original })}
+      style={styles.item}
+    >
       <Text style={styles.title}>{title}</Text>
       <Sudoku solved={solved} original={original} width={150} />
     </TouchableOpacity>
   );
 }
 
-export default function SolvedPuzzles() {
+export default function SolvedPuzzles({ navigation }) {
   const context = useContext(Context);
   const [grids, setGrids] = useState(null);
+
+  function onSelect(item) {
+    navigation.navigate("SolvedSudoku", item);
+  }
 
   useEffect(() => {
     const getGrids = async () => {
@@ -46,7 +54,7 @@ export default function SolvedPuzzles() {
   if (grids.length === 0) {
     return (
       <View style={styles.container}>
-        <Text>There are no saved Sudokus.</Text>
+        <Text style={{ color: "#3e4a4f" }}>There are no saved Sudokus.</Text>
       </View>
     );
   }
@@ -61,6 +69,9 @@ export default function SolvedPuzzles() {
             solved={item.solved}
             original={item.original}
             title={`Sudoku ${item.grid_id}`}
+            onSelect={(item) => {
+              onSelect(item);
+            }}
           />
         )}
         keyExtractor={(item) => item.grid_id}
@@ -72,10 +83,10 @@ export default function SolvedPuzzles() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: Constants.statusBarHeight + 52.5,
-    paddingBottom: 65,
+    marginTop: Constants.statusBarHeight + 65,
+    marginBottom: 65,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
     width: "100%",
     flexDirection: "row",
   },
@@ -90,5 +101,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    color: "#3e4a4f",
   },
 });

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Dimensions } from "react-native";
 
 export default function Scope(props) {
   const width = props.width;
@@ -54,26 +54,28 @@ export default function Scope(props) {
       borderBottomWidth: borderWidth,
     },
     top: {
-      width: "100%",
+      width: Dimensions.get("window").width - 2 * padding,
       height: (height - scopeSide) / 2,
+      left: padding,
       top: 0,
     },
     bottom: {
-      width: "100%",
+      width: Dimensions.get("window").width - 2 * padding,
       height: (height - scopeSide) / 2,
+      left: padding,
       bottom: 0,
     },
     left: {
       width: padding,
-      height: scopeSide,
+      height: "100%",
       left: 0,
-      top: (height - scopeSide) / 2,
+      top: 0,
     },
     right: {
       width: padding,
-      height: scopeSide,
+      height: "100%",
       right: 0,
-      top: (height - scopeSide) / 2,
+      top: 0,
     },
   });
 

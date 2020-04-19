@@ -1,35 +1,32 @@
-import React, { useContext } from "react";
-import { StyleSheet, View, Dimensions } from "react-native";
+import React, { useContext, useEffect } from "react";
+import { StyleSheet, View, Dimensions, Text } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import ActionButton from "../actionButton/ActionButton";
 import Sudoku from "../sudoku/Sudoku";
 import Context from "../context/Context";
 
-export default function Result({ navigation, route }) {
+export default function SolvedSudoku({ navigation, route }) {
   const context = useContext(Context);
+
   // 2d array of int representing the sudoku puzzle solved
   const solved = route.params.solved;
   const original = route.params.original;
+  const title = route.params.title;
 
   useFocusEffect(
     React.useCallback(() => {
-      //console.log(Dimensions.get("window"));
+      context.solvedFocused[1](true);
+
+      return () => {
+        context.solvedFocused[1](false);
+      };
     }, [])
   );
 
   return (
     <View style={styles.container}>
-      <ActionButton
-        onPress={() => {
-          const grids = {
-            original: original,
-            solved: solved,
-          };
-          context.saveSudoku(grids);
-        }}
-        content="Save"
-        iconName={null}
-      />
+      <Text style={{ fontSize: 20, marginBottom: 12.5, color: "#3e4a4f" }}>
+        {title}
+      </Text>
       <Sudoku
         solved={solved}
         original={original}

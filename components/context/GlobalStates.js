@@ -4,6 +4,7 @@ import * as SQLite from "expo-sqlite";
 
 const GlobalStates = (props) => {
   const [scannerActive, setScannerActive] = useState(false);
+  const [solvedFocused, setSolvedFocused] = useState(false);
 
   // Seb to implement
   const detectSudoku = (photo) => {
@@ -150,14 +151,20 @@ const GlobalStates = (props) => {
     return grids;
   };
 
+  const toggleShift = (bool) => {
+    setSolvedFocused(bool);
+  };
+
   return (
     <Context.Provider
       value={{
         scannerActive: [scannerActive, setScannerActive],
+        solvedFocused: [solvedFocused, setSolvedFocused],
         detectSudoku: detectSudoku,
         solveSudoku: solveSudoku,
         saveSudoku: saveSudoku,
         getAllSudokus: getAllSudokus,
+        toggleShift: toggleShift,
       }}
     >
       {props.children}

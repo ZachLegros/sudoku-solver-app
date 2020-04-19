@@ -5,7 +5,7 @@ import Ripple from "react-native-material-ripple";
 import Context from "../context/Context";
 import * as RootNavigation from "../../RootNavigation";
 
-export default function BottomBar(props) {
+export default function BottomBar() {
   const [bottomBarFade] = useState(new Animated.Value(-65));
   const [solverActive, setSolverActive] = useState(true);
   const [solvedActive, setSolvedActive] = useState(false);
@@ -84,6 +84,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: "100%",
     shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2.62,
+
     elevation: 4,
   },
   bottomTab: {
