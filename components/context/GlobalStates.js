@@ -8,7 +8,9 @@ const GlobalStates = (props) => {
   const [solvedFocused, setSolvedFocused] = useState(false);
 
   // Seb to implement
-  const detectSudoku = (photo) => {
+  const detectSudoku = async (path) => {
+    let res = await detect(path);
+    console.log(res);
     const detected = new Promise((resolve) => {
       const grid = [
         [7, 0, 8, 0, 0, 0, 3, 0, 0],

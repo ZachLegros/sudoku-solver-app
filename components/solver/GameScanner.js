@@ -62,7 +62,7 @@ export default function GameScanner({ navigation }) {
             },
           },
         ],
-        { base64: true }
+        { base64: false }
       ).then(async (croppedPhoto) => {
         // clean cache memory
         await FileSystem.deleteAsync(photo.uri).catch(() => {
@@ -75,7 +75,7 @@ export default function GameScanner({ navigation }) {
         });
 
         //detect sudoku board
-        let detected = await context.detectSudoku(croppedPhoto);
+        let detected = await context.detectSudoku(croppedPhoto.uri);
         if (detected) {
           const solved = context.solveSudoku(detected);
           navigation.navigate("Result", {

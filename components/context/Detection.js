@@ -1,13 +1,8 @@
-import { Canvas, createCanvas, Image, ImageData, loadImage } from "canvas";
-import { JSDOM } from "jsdom";
-//const { writeFileSync } = require("fs");
+import Jimp from "jimp";
 import cv from "opencv.js";
 
 export default async function detect(imgPath) {
-  // before loading opencv.js we emulate a minimal HTML DOM. See the function declaration below.
-  installDOM();
-  // using node-canvas, we an image file to an object compatible with HTML DOM Image and therefore with cv.imread()
-  const image = await loadImage(imgPath);
+  const image = await Jimp.read(imgPath);
   const src = cv.imread(image);
   const dst = new cv.Mat();
 
@@ -64,7 +59,6 @@ export default async function detect(imgPath) {
   }
 
   //find and draw the largest contour
-  let result = cv.Mat.zeros(dst.cols, dst.rows, cv.CV_8UC3); // show contours
   let color = new cv.Scalar(255, 255, 255);
 
   let biggestContour = contourArr[0];
@@ -88,17 +82,4 @@ export default async function detect(imgPath) {
   src.delete();
   dst.delete(); */
   return true;
-}
-
-// Using jsdom and node-canvas we define some global variables to emulate HTML DOM.
-// Although a complete emulation can be archived, here we only define those globals used
-// by cv.imread() and cv.imshow().
-function installDOM() {
-  const dom = new JSDOM();
-  global.document = dom.window.document;
-  // The rest enables DOM image and canvas and is provided by node-canvas
-  global.Image = Image;
-  global.HTMLCanvasElement = Canvas;
-  global.ImageData = ImageData;
-  global.HTMLImageElement = Image;
 }
