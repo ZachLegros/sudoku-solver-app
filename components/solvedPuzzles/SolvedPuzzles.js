@@ -6,10 +6,8 @@ import {
   FlatList,
   SafeAreaView,
   TouchableOpacity,
-  Dimensions,
 } from "react-native";
 import Constants from "expo-constants";
-import ActionButton from "../actionButton/ActionButton";
 import Context from "../context/Context";
 import Sudoku from "../sudoku/Sudoku";
 import Spinner from "../spinner/Spinner";
@@ -74,7 +72,7 @@ export default function SolvedPuzzles({ navigation }) {
             }}
           />
         )}
-        keyExtractor={(item) => item.grid_id}
+        keyExtractor={(item) => item.grid_id.toString()}
       />
     </SafeAreaView>
   );

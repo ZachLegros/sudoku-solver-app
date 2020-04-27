@@ -1,10 +1,10 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { StyleSheet, View, Dimensions, Text } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import Sudoku from "../sudoku/Sudoku";
 import Context from "../context/Context";
 
-export default function SolvedSudoku({ navigation, route }) {
+export default function SolvedSudoku({ route }) {
   const context = useContext(Context);
 
   // 2d array of int representing the sudoku puzzle solved

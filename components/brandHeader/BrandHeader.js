@@ -23,7 +23,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     flexDirection: "row",
-    right: 8,
   },
   logo: {
     height: 40,
@@ -34,5 +33,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     marginLeft: 8,
     color: "#3e4a4f",
+    width: "100%",
   },
 });
