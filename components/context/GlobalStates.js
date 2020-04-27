@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Context from "./Context";
 import * as SQLite from "expo-sqlite";
+import detect from "./Detection";
 
 const GlobalStates = (props) => {
   const [scannerActive, setScannerActive] = useState(false);
