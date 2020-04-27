@@ -73,7 +73,7 @@ const cv = require('opencv.js');
   
     let peri = cv.arcLength(biggestContour, true);
     let contourApprox = new cv.Mat();
-    cv.approxPolyDP(biggestContour, contourApprox, 0.015 * peri, true);
+    cv.approxPolyDP(biggestContour, contourApprox, 0.07 * peri, true);
   
     if (contourApprox.rows != 4) {
       console.log(`could not detect sudoku${i}.jpg`);
