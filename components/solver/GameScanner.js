@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   StyleSheet,
   Text,
@@ -16,6 +16,7 @@ import * as FileSystem from "expo-file-system";
 import * as ImageManipulator from "expo-image-manipulator";
 import Scope from "./Scope";
 import { useFocusEffect } from "@react-navigation/native";
+import Constants from "expo-constants";
 
 export default function GameScanner({ navigation }) {
   const context = useContext(Context);
@@ -43,7 +44,6 @@ export default function GameScanner({ navigation }) {
       setLoading(true);
 
       // get origin and crop size
-      const factor = photo.width / windowWidth;
       const cropSide = photo.width;
       // give padding to reduce margin of error
       const cropX = 0;
@@ -79,15 +79,15 @@ export default function GameScanner({ navigation }) {
         if (detected) {
           const solved = context.solveSudoku(detected);
           navigation.navigate("Result", {
-            grid: solved,
-            originalGrid: detected,
+            solved: solved,
+            original: detected,
           });
         } else {
           setLoading(false);
 
           Alert.alert(
             "CamSolve",
-            "No Sudoku puzzle was found. Make sure your that picture is bright enough and that the whole grid is covered in the frame.",
+            "No Sudoku puzzle was found. Make sure that the picture is bright enough and that the whole grid is covered in the frame.",
             [{ text: "OK" }],
             { cancelable: false }
           );
@@ -146,7 +146,7 @@ export default function GameScanner({ navigation }) {
           alignItems: "center",
         }}
       >
-        <Text>No access to camera</Text>
+        <Text style={{ color: "#3e4a4f" }}>No access to camera</Text>
       </View>
     );
   }
@@ -156,16 +156,23 @@ export default function GameScanner({ navigation }) {
       <View style={{ flex: 1, width: "100%", height: "100%" }}>
         {loading ? <Spinner /> : null}
         {focused ? (
-          <Camera
-            ref={(ref) => {
-              camera = ref;
-            }}
-            style={{ flex: 1 }}
-            ratio="16:9"
-            flashMode={flash}
-            autoFocus={true}
-            type={type}
-          >
+          <React.Fragment>
+            <Camera
+              ref={(ref) => {
+                camera = ref;
+              }}
+              style={{ flex: 1, marginTop: Constants.statusBarHeight }}
+              ratio="16:9"
+              flashMode={flash}
+              autoFocus={true}
+              type={type}
+            >
+              <Scope
+                width={windowWidth}
+                height={windowHeight}
+                padding={scopePadding}
+              />
+            </Camera>
             <View style={styles.container}>
               <TouchableOpacity
                 onPress={() => {
@@ -199,12 +206,7 @@ export default function GameScanner({ navigation }) {
                 <FontAwesome5 name="bolt" color="#fff" size={24} />
               </TouchableOpacity>
             </View>
-            <Scope
-              width={windowWidth}
-              height={windowHeight}
-              padding={scopePadding}
-            />
-          </Camera>
+          </React.Fragment>
         ) : null}
       </View>
     </React.Fragment>
@@ -213,21 +215,19 @@ export default function GameScanner({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0,
-    position: "absolute",
     paddingBottom: 25,
     paddingTop: 25,
     bottom: 0,
     width: "100%",
+    height: 125,
     zIndex: 10,
-    backgroundColor: "transparent",
+    position: "absolute",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",
     backgroundColor: "#19191a",
   },
   elem: {
-    flex: 0,
     alignItems: "center",
     justifyContent: "center",
     width: 75,
