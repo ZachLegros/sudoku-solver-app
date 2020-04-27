@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { StyleSheet, View, Dimensions, Text } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
 import ActionButton from "../actionButton/ActionButton";
 import Sudoku from "../sudoku/Sudoku";
 import Context from "../context/Context";
@@ -14,12 +13,6 @@ export default function Result({ navigation, route }) {
   const original = route.params.original;
 
   const [saved, setSaved] = useState(false);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      //console.log(Dimensions.get("window"));
-    }, [])
-  );
 
   return (
     <View style={styles.container}>
