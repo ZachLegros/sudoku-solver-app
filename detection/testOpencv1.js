@@ -11,35 +11,34 @@ const cv = require('opencv.js');
     const image = await loadImage(`./images/sudoku${i}.jpg`);
     const src = cv.imread(image);
     const dst = new cv.Mat();
-    // const M = cv.Mat.ones(9, 9, cv.CV_8U);
-    // const anchor = new cv.Point(-1, -1);
-    // cv.dilate(src, dst, M, anchor, 1, cv.BORDER_CONSTANT, cv.morphologyDefaultBorderValue());
-  
-  
+    const debugImg = new cv.Mat();
+
+    let width = src.cols;
+    let height = src.rows;
+
+
+    let r = 500 / width;
+    let dsize = new cv.Size(500, height*r);
+    cv.resize(src, src, dsize, 0, 0, cv.INTER_AREA);
+
+    
     //test1
     cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY, 0);
-    let ksize = new cv.Size(9, 9);
-    cv.GaussianBlur(dst, dst, ksize, 0, 0, cv.BORDER_DEFAULT);
-    cv.Canny(dst, dst, 50, 100, 3, false);
-    // cv.adaptiveThreshold(dst, dst, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY_INV, 7, 7);
-    
     
     let M = cv.Mat.ones(3, 3, cv.CV_8U);
-    // let anchor = new cv.Point(-1, -1);
-  
-  
-    // // cv.dilate(dst, dst, M, anchor, 1, cv.BORDER_CONSTANT, cv.morphologyDefaultBorderValue());
-    // cv.erode(dst, dst, M, anchor, 1, cv.BORDER_CONSTANT, cv.morphologyDefaultBorderValue());
-  
-    ksize = new cv.Size(11, 11);
-    cv.GaussianBlur(dst, dst, ksize, 0, 0, cv.BORDER_DEFAULT);
-    // // cv.threshold(dst, dst, 100, 255, cv.THRESH_BINARY);
-  
-    M = cv.Mat.ones(3, 3, cv.CV_8U);
-    // // // You can try more different parameters
     cv.morphologyEx(dst, dst, cv.MORPH_CLOSE, M);
-  
-    
+    cv.morphologyEx(dst, dst, cv.MORPH_OPEN, M);
+    // cv.morphologyEx(dst, dst, cv.MORPH_GRADIENT, M);
+
+    let ksize = new cv.Size(5, 5);
+    // You can try more different parameters
+    // cv.GaussianBlur(dst, dst, ksize, 2);
+    cv.adaptiveThreshold(dst, dst, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY_INV, 7, 2);
+    cv.morphologyEx(dst, dst, cv.MORPH_CLOSE, M);
+
+    // cv.Canny(dst, debugImg, 5, 40, 3, false);
+
+
     // contour detection
     let contours = new cv.MatVector();
     let hierarchy = new cv.Mat();
@@ -82,7 +81,7 @@ const cv = require('opencv.js');
   
     let a = new cv.MatVector()
     a.push_back(contourApprox);
-    cv.drawContours(result, a, 0, color, 5, cv.LINE_8);
+    cv.drawContours(src, a, 0, color, 5, cv.LINE_8);
     
     
     // console.log(contourApprox.intPtr(3, 0));
@@ -91,7 +90,7 @@ const cv = require('opencv.js');
   
     // we create an object compatible HTMLCanvasElement
     const canvas = createCanvas(300, 300);
-    cv.imshow(canvas, result);
+    cv.imshow(canvas, src);
     writeFileSync(`./out/sudoku${i}.jpg`, canvas.toBuffer('image/jpeg'));
     src.delete();
     dst.delete();
