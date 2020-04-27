@@ -44,7 +44,6 @@ export default function GameScanner({ navigation }) {
       setLoading(true);
 
       // get origin and crop size
-      const factor = photo.width / windowWidth;
       const cropSide = photo.width;
       // give padding to reduce margin of error
       const cropX = 0;

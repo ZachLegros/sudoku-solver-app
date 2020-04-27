@@ -12,14 +12,22 @@ export default function ActionButton(props) {
       rippleOpacity={0.25}
       rippleSize={400}
       rippleContainerBorderRadius={5}
-      style={styles.button}
+      style={[
+        styles.button,
+        {
+          paddingTop: props.content ? 12 : 8,
+          paddingBottom: props.content ? 12 : 8,
+          paddingLeft: props.content ? 22 : 8,
+          paddingRight: props.content ? 22 : 8,
+        },
+      ]}
     >
       <Text style={{ color: "#fff", fontSize: 14 }}>{props.content}</Text>
       {props.iconName ? (
         <FontAwesome5
           name={props.iconName}
-          style={{ opacity: 0.9, marginLeft: 8 }}
-          size={14}
+          style={[{ opacity: 0.9 }, props.content ? { marginLeft: 8 } : null]}
+          size={props.content ? 14 : 18}
           color="#fff"
         />
       ) : null}
@@ -30,10 +38,6 @@ export default function ActionButton(props) {
 const styles = StyleSheet.create({
   button: {
     borderRadius: 5,
-    paddingTop: 12,
-    paddingBottom: 12,
-    paddingLeft: 22,
-    paddingRight: 22,
     flex: 0,
     elevation: 4,
     flexDirection: "row",
